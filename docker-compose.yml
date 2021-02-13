@@ -1,0 +1,42 @@
+# v3 syntax
+version: '3.7'
+
+# Volumes (for persist data when container restart)
+volumes:
+  # Postgres Data
+  mysql-data:
+    driver: local
+
+# Networks
+networks:
+  joomla:
+    name: joomla
+    driver: bridge
+
+services:
+
+  joomla:
+    image: joomla
+    ports:
+      - 8080:80
+    environment:
+      "JOOMLA_DB_HOST=joomladb"
+      "JOOMLA_DB_PASSWORD=secret"
+      networks:
+      - joomla
+    depends_on:
+      - database
+
+  database:
+    image: mysql:5.7
+    container_name: joomladb
+    volumes:
+      - mysql-data:/var/lib/mysql
+    networks:
+      - joomola
+    environment:
+      - "MYSQL_DATABASE=joomola"
+      - "MYSQL_PASSWORD=joomola"
+      - "MYSQL_ROOT_PASSWORD=secret"
+    ports:
+      - "33061:33060"
